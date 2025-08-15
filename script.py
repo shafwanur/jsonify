@@ -1,50 +1,55 @@
 import os
 import json
 
-# Specify the start directory you want to search in
-start_directory = "./"
+from os import (
+    listdir
+)
 
-# Output file name as .json
-output_file_name = "output"
+from os.path import (
+    isfile, 
+    isdir
+)
 
-def root_check(root):
-    if len(root) > 3 and root[2] == ".": # remove dotfolders
-        return False
-    
-    return True
+from helpers import (
+    output_file,
+    clean_file_content,
+    check_dir,
+    check_file
+)
 
-# Function to list all folders in a directory
-def list_folders(directory):
-    folder_list = []
-    for root, dirs, files in os.walk(directory):
-        if not root_check(root):
-            continue
-        
-        print("root", root)
-        print("dirs", dirs)
-        print("files", files)
-        print()
-        # if len(root) > 3 and root[2] == ".": # ignore dotfiles and "dotfolders"
-        #     print("ignoring, ", root)
-        #     continue
+def recurse(dir: str = "./"): 
+    _list = []
+    for item in listdir(dir):
+        path_to_item = os.path.join(dir, item)
+        if isfile(path_to_item): 
+            if not check_file(item): 
+                continue
+            
+            try: 
+                with open(path_to_item) as f: 
+                    file_content = f.read()
+                    file_content = clean_file_content(file_content)
+                    _list.append({f"{item}": file_content})
+            except:
+                _list.append({f"{item}": "..."})
 
-        for dir_name in dirs:
-            # if dir
-            # print("appending, ", os.path.join(root[2:], dir_name))
-            folder_list.append(os.path.join(root[2:], dir_name))
+    for item in listdir(dir):
+        path_to_item = os.path.join(dir, item)
+        try:
+            if isdir(path_to_item): 
+                if not check_dir(item): 
+                    continue
+                
+                _list.append(recurse(path_to_item))
+        except:
+            pass
 
-    return folder_list
 
-# Get a list of all folders in the specified directory
-folders = list_folders(start_directory)
+    return {f"{dir}": _list}
 
-# Create a JSON representation of the folder list
-json_output = json.dumps(folders, indent=4)
+data = recurse()
 
-# Output the JSON to a file or print it
-# You can change the file name as needed
-with open(f"{output_file_name}.json", "w") as json_file:
-    json_file.write(json_output)
+with open(output_file, "w") as f: 
+    json.dump(data, f, indent=2)
 
-# If you want to print the JSON to the console, you can use this instead:
-# print(json_output)
+print(f"JSON file {output_file} successfully created!")
