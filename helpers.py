@@ -3,8 +3,8 @@ import string
 
 # set name of output file
 output_file = "output.json" 
-ignored_dirs = ["__pycache__", "codebase_jsonify"]
-ignored_files = ["README.md", "LICENSE", ".gitignore"]
+ignored_dirs = ["__pycache__", "codebase_jsonify", ".venv", ".ruff_cache"]
+ignored_files = ["README.md", "LICENSE", ".gitignore", "uv.lock", ".env", ".python-version", "pyproject.toml"]
 
 def clean_file_content(file_content: str): 
     '''
