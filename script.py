@@ -1,32 +1,23 @@
 import os
 import json
 
-from os import (
-    listdir
-)
+from os import listdir
 
-from os.path import (
-    isfile, 
-    isdir
-)
+from os.path import isfile, isdir
 
-from helpers import (
-    output_file,
-    clean_file_content,
-    check_dir,
-    check_file
-)
+from helpers import output_file, clean_file_content, check_dir, check_file
 
-def recurse(dir: str = "./"): 
+
+def recurse(dir: str = "./"):
     _list = []
     for item in listdir(dir):
         path_to_item = os.path.join(dir, item)
-        if isfile(path_to_item): 
-            if not check_file(item): 
+        if isfile(path_to_item):
+            if not check_file(item):
                 continue
-            
-            try: 
-                with open(path_to_item) as f: 
+
+            try:
+                with open(path_to_item) as f:
                     file_content = f.read()
                     file_content = clean_file_content(file_content)
                     _list.append({f"{item}": file_content})
@@ -36,20 +27,20 @@ def recurse(dir: str = "./"):
     for item in listdir(dir):
         path_to_item = os.path.join(dir, item)
         try:
-            if isdir(path_to_item): 
-                if not check_dir(item): 
+            if isdir(path_to_item):
+                if not check_dir(item):
                     continue
-                
+
                 _list.append(recurse(path_to_item))
         except:
             pass
 
-
     return {f"{dir}": _list}
+
 
 data = recurse()
 
-with open(output_file, "w") as f: 
+with open(output_file, "w") as f:
     json.dump(data, f, indent=2)
 
 print(f"JSON file {output_file} successfully created!")
