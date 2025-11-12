@@ -40,7 +40,7 @@ def recurse(dir: str = "./"):
 
 data = recurse()
 
-with open(output_file, "w") as f:
+with open(f"{output_file}", "w") as f:
     json.dump(data, f, indent=2)
 
-print(f"JSON file {output_file} successfully created!")
+print(f"JSON file created in {output_file}!")

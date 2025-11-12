@@ -1,9 +1,12 @@
 import os
 import string
+import pathlib
 
 # set name of output file
-output_file = "output.json"
-ignored_dirs = ["__pycache__", "codebase-jsonify", ".venv", ".ruff_cache"]
+output_file = f"{pathlib.Path(__file__).parent}/output.json"
+
+# ignore rules
+ignored_dirs = ["__pycache__", "jsonify", ".venv", ".ruff_cache", "bin", "Debug"]
 ignored_files = [
     "README.md",
     "LICENSE",
